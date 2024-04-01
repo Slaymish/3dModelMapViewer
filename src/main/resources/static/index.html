@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Models Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #mapid { height: 600px; }
+    </style>
+</head>
+<body>
+<div id="mapid"></div>
+<script src="app.js"></script>
+<!-- Add this inside the <body>, above the <div id="mapid"></div> -->
+<div id="uploadForm" style="display:none;">
+    <form id="modelForm">
+        Author: <input type="text" id="author" name="author"><br>
+        Description: <input type="text" id="description" name="description"><br>
+        Model File: <input type="file" id="modelFile" name="modelFile"><br>
+        <input type="button" value="Upload Model" onclick="uploadModel()">
+    </form>
+</div>
+
+</body>
+</html>
