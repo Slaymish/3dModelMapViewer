@@ -4,11 +4,11 @@ This project is a web application that allows users to view and interact with 3D
 
 ## Features
 
-- Interactive map interface for browsing 3D models
-- Display 3D models using Babylon.js
-- View model details such as author and description
-- Upload new 3D models and associate them with a specific location on the map
-- Retrieve address information for selected locations using reverse geocoding
+- [X] Interactive map interface for browsing 3D models
+- [ ] Display 3D models using Babylon.js
+- [X] View model details such as author and description
+- [X] Upload new 3D models and associate them with a specific location on the map
+- [ ] Retrieve address information for selected locations using reverse geocoding
 
 ## Prerequisites
 
