@@ -19,7 +19,7 @@ This project is a web application that allows users to view and interact with 3D
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/3dModelMapViewer.git
+   git clone https://github.com/Slaymish/3dModelMapViewer.git
    cd 3dModelMapViewer
    ```
 
