@@ -1,32 +1,21 @@
-# Use a base image with Java and Maven
-FROM maven:3.8.4-openjdk-17 AS build
-
-# Set the working directory in the container
+# Use Maven to build the application
+FROM maven:3.8.4-openjdk-17 as build
 WORKDIR /app
-
-# Copy the pom.xml file to the working directory
 COPY pom.xml .
-
-# Download the project dependencies
 RUN mvn dependency:go-offline
-
-# Copy the project source code to the working directory
 COPY src ./src
+# Skip tests to speed up the build process, but consider running them in real scenarios
+RUN mvn package -DskipTests
 
-# Build the application and package it as a JAR file
-RUN mvn package spring-boot:repackage
-
-# Use a lightweight base image for the runtime
+# Prepare runtime environment
 FROM openjdk:17-jdk-slim
-
-# Set the working directory in the container
 WORKDIR /app
-
-# Copy the built JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
+COPY wait-for-postgres.sh wait-for-postgres.sh
+RUN chmod +x wait-for-postgres.sh
 
-# Expose the port on which your application runs (change if necessary)
-EXPOSE 8080
+# Install PostgreSQL client
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
-# Run the application
-CMD ["java", "-jar", "app.jar"]
+CMD ["./wait-for-postgres.sh", "db", "java", "-jar", "app.jar"]
+

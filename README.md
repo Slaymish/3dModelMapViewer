@@ -1,58 +1,73 @@
-# 3D Models Map Viewer
-The 3D Models Map Viewer is a web application that allows users to upload 3D models with specific geographic locations and view these models on an interactive map. This project utilizes a Java Spring Boot backend for handling model uploads and metadata management, with a Leaflet-powered frontend for map interaction.
+# 3D Model Map Viewer
+
+This project is a web application that allows users to view and interact with 3D models on a map. It provides a user-friendly interface for exploring and discovering 3D models based on their geographic location.
 
 ## Features
-- Upload 3D Models: Users can upload 3D model files, specifying their geographic location (latitude and longitude) along with metadata such as author and description.
-- View Models on Map: Uploaded models are represented as markers on an interactive map. Users can click these markers to view model details.
-- Model Details: A popup or a dedicated viewer allows users to explore further information about the model, including a possible preview or link to view the model in 3D.
+
+- Interactive map interface for browsing 3D models
+- Display 3D models using Babylon.js
+- View model details such as author and description
+- Upload new 3D models and associate them with a specific location on the map
+- Retrieve address information for selected locations using reverse geocoding
+
+## Prerequisites
+
+- Docker
+- Docker Compose
 
 ## Getting Started
-###Prerequisites
-- Java JDK 11 or newer
-- Maven
-- PostgreSQL
-- Node.js and npm (for running the frontend)
 
-### Backend Setup
-```bash
-git clone https://your-repository-url.git
-cd your-repository-directory
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/3dModelMapViewer.git
+   cd 3dModelMapViewer
+   ```
 
-Configure the database connection in src/main/resources/application.properties:
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/yourDatabase
-spring.datasource.username=yourUsername
-spring.datasource.password=yourPassword
-```
+2. Set the required environment variables:
+    - Create a `.env` file in the project root directory.
+    - Add the following variables to the `.env` file:
+      ```
+      SPRING_DATASOURCE_PASSWORD=your-postgres-password
+      ```
+    - Replace `your-postgres-password` with your actual PostgreSQL password.
 
-Run the application:
-```bash
-mvn spring-boot:run
-```
+3. Run the application using Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
 
-The backend server will start, by default on http://localhost:8080.
+   This command will build the application image, start the PostgreSQL service, and start the application service. The database will be automatically created based on the environment variables.
 
-### Frontend Setup
-Navigate to the frontend directory:
-Assuming your frontend code is in the frontend directory within the project.
+4. Access the application in your web browser at `http://localhost:8080`.
 
-```bash
-cd static/
-```
-Install dependencies:
-```bash
-npm install
-```
-Run the frontend:
-```bash
-npm start
-```
-The frontend should now be accessible at http://localhost:3000, depending on your configuration.
+## Configuration
 
-## Usage
-Uploading a Model: Navigate to the upload page via the interface, fill in the details for your model, select the file, and submit.
-Viewing Models: On the map page, click any model marker to view its details and access the model viewer if available.
+The application uses the following environment variables for configuration:
+
+- `SPRING_DATASOURCE_URL`: The URL of the PostgreSQL database (default: `jdbc:postgresql://db:5432/map3dmodels`).
+- `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database (default: `postgres`).
+- `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database (set in the `.env` file).
+
+You can modify these variables in the `docker-compose.yaml` file if needed.
+
+## Data Persistence
+
+The PostgreSQL data is persisted using a Docker volume named `postgres-data`. This ensures that the database data is preserved across container restarts.
+
+## Troubleshooting
+
+If you encounter any issues during the setup or running of the application, try the following:
+
+- Make sure you have the latest versions of Docker and Docker Compose installed.
+- Ensure that the required ports (8080 for the application and 5432 for PostgreSQL) are not being used by other applications.
+- Check the logs of the containers using `docker-compose logs` to identify any error messages.
+
+If the issue persists, please open an issue on the GitHub repository with details about the problem.
 
 ## Contributing
-Contributions are welcome! Please feel free to submit pull requests or open issues to discuss proposed changes or report bugs.
+
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
