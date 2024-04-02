@@ -2,6 +2,9 @@
 
 This project is a web application that allows users to view and interact with 3D models on a map. It provides a user-friendly interface for exploring and discovering 3D models based on their geographic location.
 
+![3D Models Map](https://github.com/Slaymish/3dModelMapViewer/assets/21288505/a19650b5-b8c1-42a3-9d66-b70fa7f0253d)
+
+
 ## Features
 
 - [X] Interactive map interface for browsing 3D models
