@@ -7,27 +7,69 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
 }).addTo(mymap);
 
-// Function to load data points and add to map
 function loadDataPoints() {
     fetch('/api/datapoints')
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            const modelsList = document.getElementById('modelsList');
+            modelsList.innerHTML = ''; // Clear existing list items
+
             data.forEach(dp => {
+                // Add marker to the map
                 var marker = L.marker([dp.latitude, dp.longitude]).addTo(mymap);
                 marker.bindPopup(`<b>${dp.building.author}</b><br>${dp.building.description}`).openPopup();
+
+                // Create a new list item for the model
+                const listItem = document.createElement('div');
+                listItem.classList.add('p-4', 'border', 'border-gray-200', 'rounded', 'mb-2', 'bg-white');
+                listItem.innerHTML = `
+                    <h3 class="text-lg font-semibold">${dp.building.author}</h3>
+                    <p>${dp.building.description}</p>
+                    <p>Latitude: ${dp.latitude}, Longitude: ${dp.longitude}</p>
+                `;
+
+                // Append the new list item to the models list
+                modelsList.appendChild(listItem);
             });
         })
         .catch(error => console.error('Error loading data points:', error));
 }
 
+
 let selectedLat, selectedLng;
 
+var selectedMarker; // Holds the currently selected marker
+
 mymap.on('click', function(e) {
+    // Enable the "Upload Model" button
+    document.getElementById('uploadModelButton').disabled = false;
+    document.getElementById('uploadModelButton').classList.remove('opacity-50', 'cursor-not-allowed');
+    document.getElementById('uploadModelButton').classList.add('opacity-100', 'cursor-pointer');
+
+    // Update latitude and longitude values
     selectedLat = e.latlng.lat;
     selectedLng = e.latlng.lng;
-    document.getElementById('uploadForm').style.display = 'block';
+
+    // Remove the previous marker, if any
+    if (selectedMarker) {
+        mymap.removeLayer(selectedMarker);
+    }
+
+    // Add a new marker to the map at the clicked location
+    selectedMarker = L.marker([selectedLat, selectedLng]).addTo(mymap);
 });
+
+
+function showForm() {
+    document.getElementById('uploadForm').style.display = 'flex'; // Use 'flex' to show the modal
+}
+
+function hideForm() {
+    document.getElementById('uploadForm').style.display = 'none'; // Hide the modal
+}
+
+
 
 function uploadModel() {
     var formData = new FormData(document.getElementById('modelForm'));

@@ -1,25 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Models Map</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        #mapid { height: 600px; }
+        #mapid { height: 100vh; }
+        .leaflet-container { height: 100vh; width: 100%; }
+        #uploadForm {
+            z-index: 1000; /* Ensures the modal is above other content */
+            display: none; /* Starts off hidden */
+            position: fixed; /* Stays in place on scroll */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
     </style>
 </head>
-<body>
-<div id="mapid"></div>
-<script src="app.js"></script>
-<!-- Add this inside the <body>, above the <div id="mapid"></div> -->
-<div id="uploadForm" style="display:none;">
-    <form id="modelForm">
-        Author: <input type="text" id="author" name="author"><br>
-        Description: <input type="text" id="description" name="description"><br>
-        Model File: <input type="file" id="modelFile" name="modelFile"><br>
-        <input type="button" value="Upload Model" onclick="uploadModel()">
+<body class="flex">
+<div id="mapid" class="flex-grow"></div>
+<div class="w-96 bg-gray-100 p-4" style="height: 100vh; overflow-y: scroll;">
+    <button id="uploadModelButton" onclick="showForm()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 opacity-50 cursor-not-allowed" disabled>Upload Model</button>
+    <div id="modelsList" class="space-y-4">
+        <!-- Dynamically append model entries here -->
+    </div>
+</div>
+
+<div id="uploadForm" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+    <form id="modelForm" class="bg-white p-6 rounded-lg space-y-4">
+        <div>
+            <label for="author" class="block">Author:</label>
+            <input type="text" id="author" name="author" class="w-full border-2 p-2 rounded">
+        </div>
+        <div>
+            <label for="description" class="block">Description:</label>
+            <input type="text" id="description" name="description" class="w-full border-2 p-2 rounded">
+        </div>
+        <div>
+            <label for="modelFile" class="block">Model File:</label>
+            <input type="file" id="modelFile" name="modelFile" class="w-full border-2 p-2 rounded">
+        </div>
+        <div class="flex justify-between">
+            <button type="button" onclick="uploadModel()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Upload Model</button>
+            <button type="button" onclick="hideForm()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
+        </div>
     </form>
 </div>
 
+<script src="app.js"></script>
 </body>
 </html>
