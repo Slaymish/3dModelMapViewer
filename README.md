@@ -1,21 +1,12 @@
-# 3D Model Map Viewer
+# Building Archive
 
-Run on localhost:8080
+Runs on localhost:8080
 
 ```bash
 mvn jetty:run
 ```
 
-Generate .war file
-
-```bash
-mvn jetty:war
-```
-
-This project is a web application that allows users to view and interact with 3D models on a map. It provides a user-friendly interface for exploring and discovering 3D models based on their geographic location.
-
-![3D Models Map](https://github.com/Slaymish/3dModelMapViewer/assets/21288505/a19650b5-b8c1-42a3-9d66-b70fa7f0253d)
-
+This project is a web application that allows users to upload their 3d models of real building to a map and see them all at once of a 3d map. 
 
 
 
