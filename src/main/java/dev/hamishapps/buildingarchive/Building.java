@@ -60,4 +60,21 @@ public class Building {
                 author +
                 description;
     }
+
+    public boolean hasBuilding(){
+        return (this.modelPath != null);
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+
+    public double[] getRotation() {
+        return new double[]{latitude, longitude};
+    }
 }

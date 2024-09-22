@@ -41,6 +41,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+
 
         <!-- JUnit and Mockito for testing -->
         <dependency>
@@ -55,6 +63,7 @@
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -67,10 +76,9 @@
                 <configuration>
                     <webApp>
                         <!-- Set the root context path -->
-                        <contextPath>/map</contextPath>
+                        <contextPath>/</contextPath>
                     </webApp>
                     <!-- Define the WAR source directory -->
-                    <warSourceDirectory>${project.basedir}/src/main/webapp</warSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>

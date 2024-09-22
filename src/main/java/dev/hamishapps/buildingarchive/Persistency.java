@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Persistency {
 
-    private static final List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+    static final List<DataPoint> dataPoints = new ArrayList<DataPoint>();
 
     public Persistency(){}
 
@@ -20,5 +20,19 @@ public class Persistency {
 
     public static void removeDataPoint(DataPoint dp) {
         dataPoints.remove(dp);
+    }
+
+    public static DataPoint getMostRecentDataPoint() {
+        return new DataPoint(dataPoints.get(dataPoints.size() - 1));
+    }
+
+    public static void updateDataPoint(DataPoint dataPoint) {
+        for (DataPoint dp : dataPoints) {
+            if (dp.getBuilding().equals(dataPoint.getBuilding())) {
+                dp.setOffsets(dataPoint.getOffsets());
+                dp.setBuilding(dataPoint.getBuilding());
+                dp.setBuilding(dataPoint.getBuilding());
+            }
+        }
     }
 }

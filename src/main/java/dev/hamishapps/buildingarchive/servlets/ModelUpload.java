@@ -13,9 +13,28 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
-@WebServlet(name = "UploadForm", urlPatterns = "/upload")
-public class UploadForm extends HttpServlet {
+@WebServlet(name = "UploadBuilding", urlPatterns = "/upload/building")
+public class ModelUpload extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Upload a building</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"main.css\">");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>Upload Model!!!!</h1>");
+        out.println("<form action=\"/upload/building\" method=\"post\">");
+        out.println("<label>Model (obj/fbx):</label>");
+        out.println("<input type=\"file\" name=\"model\" size=\"30\">");
+        out.println("<input type=\"submit\" value=\"Submit\">");
+        out.println("</form>");
+        out.println("</body>");
+        out.println("</html>");
+
+        out.close();
     }
 
 
@@ -23,11 +42,11 @@ public class UploadForm extends HttpServlet {
         // process form
         processForm(request, response);
 
-        response.sendRedirect("/upload/building");
+        response.sendRedirect("/building");
     }
 
     private void processForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Building building = new Building();
+        Building building = Persistency.getMostRecentDataPoint().getBuilding();
 
         Enumeration<String> names = request.getParameterNames();
         while (names.hasMoreElements()) {
@@ -38,30 +57,13 @@ public class UploadForm extends HttpServlet {
                 continue;
             }
 
-            switch (name) {
-                case "author":
-                    building.setAuthor(value);
-                    break;
-                case "description":
-                    building.setDescription(value);
-                    break;
-                case "name":
-                    building.setName(value);
-                    break;
-                case "longitude":
-                    building.setLongitude(Double.valueOf(value));
-                    break;
-                case "latitude":
-                    building.setLatitude(Double.valueOf(value));
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown parameter: " + name);
+            if (name.equals("model")) {
+                building.setModelPath(value);
             }
         }
 
-        if (building.hasEnoughParams()) {
+        if (building.hasBuilding()){
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
-            Persistency.addDataPoint(new DataPoint(building));
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

@@ -12,12 +12,26 @@
         Building Archive
     </h1>
 
+    <form action="/upload" method="post">
+        <label>Name:</label>
+        <input type="text" name="name" size="30">
+        <label>Author's name:</label>
+        <input type="text" name="author" size="30">
+        <label>Description:</label>
+        <input type="text" name="description" size="30">
+        <label>Latitude:</label>
+        <input type="number" name="latitude" size="30">
+        <label>Longitude:</label>
+        <input type="number" name="longitude" size="30">
+        <input type="submit" value="Submit">
+    </form>
+
     <nav>
         <ul>
             <a href="/upload">Upload</a>
         </ul>
         <ul>
-            <a href="/explore">Explore the Map</a>
+            <a href="explore.html">Explore the Map</a>
         </ul>
     </nav>
 
@@ -26,4 +40,3 @@
     </footer>
 
 </body>
-</html>
