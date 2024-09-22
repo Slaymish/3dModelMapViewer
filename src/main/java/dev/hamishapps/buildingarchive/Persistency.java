@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Persistency {
 
-    static final List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+    static final List<DataPoint> dataPoints = new ArrayList<>();
 
     private static final Logger LOGGER = LogManager.getLogger(Persistency.class);
 

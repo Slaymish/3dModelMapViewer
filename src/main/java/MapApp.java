@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.*;
 
 import java.nio.*;
-import java.util.logging.ConsoleHandler;
+import java.util.Objects;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -55,6 +55,7 @@ public class MapApp {
             GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             // center it
+            assert vidMode != null;
             glfwSetWindowPos(
                     window,
                     (vidMode.width() - pWidth.get(0)) / 2,
@@ -88,7 +89,7 @@ public class MapApp {
         glfwDestroyWindow(window);
 
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
 
     }
 

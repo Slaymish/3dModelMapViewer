@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.logging.log4j.*;
 
 public class MapExplorer {
-    private Object worldSphere;
+    //private Object worldSphere;
 
     // logger
     private static final Logger LOGGER = LogManager.getLogger(MapExplorer.class);
@@ -18,11 +18,6 @@ public class MapExplorer {
         // set appenders
         LOGGER.info("MapExplorer created");
 
-    }
-
-    // Create the world sphere
-    private void createWorldSphere() {
-        LOGGER.info("Creating world sphere...");
     }
 
     // Explore the map
