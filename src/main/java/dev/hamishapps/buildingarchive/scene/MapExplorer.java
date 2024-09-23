@@ -1,23 +1,29 @@
-package dev.hamishapps.buildingarchive;
+package dev.hamishapps.buildingarchive.scene;
 
-import static dev.hamishapps.buildingarchive.Persistency.dataPoints;
+import dev.hamishapps.buildingarchive.Building;
+import dev.hamishapps.buildingarchive.DataPoint;
+import dev.hamishapps.buildingarchive.Persistency;
+
+import java.util.List;
+
+import org.apache.logging.log4j.*;
 
 public class MapExplorer {
-    private Object worldSphere;
+    //private Object worldSphere;
+
+    // logger
+    private static final Logger LOGGER = LogManager.getLogger(MapExplorer.class);
 
     public MapExplorer() {
-        createWorldSphere();
-    }
+        // set appenders
+        LOGGER.info("MapExplorer created");
 
-    // Create the world sphere
-    private void createWorldSphere() {
-        System.out.println("World sphere created.");
     }
 
     // Explore the map
     public void exploreMap() {
         System.out.println("Exploring the map...");
-        for (DataPoint dataPoint : dataPoints) {
+        for (DataPoint dataPoint : Persistency.getDataPoints()) {
             placeBuildingOnSphere(dataPoint);
         }
         selectBuilding();
@@ -45,50 +51,48 @@ public class MapExplorer {
         }
 
         // Apply rotation
-        System.out.printf("Placing building '%s' at (%.2f, %.2f, %.2f) with rotation %.2f degrees\n",
-                building.getName(), x, y, z, rotation);
+        LOGGER.info("Placing building '{}' at ({}, {}, {}) with rotation {} degrees", building.getName(), x, y, z, rotation);
     }
 
     // Select a building
     private void selectBuilding() {
-        if (!dataPoints.isEmpty()) {
-            DataPoint selectedDataPoint = dataPoints.get(0);
+        List<DataPoint> dataPointList = Persistency.getDataPoints();
+        if (!dataPointList.isEmpty()) {
+            DataPoint selectedDataPoint = dataPointList.get(0);
             viewBuildingDetails(selectedDataPoint);
         } else {
-            System.out.println("No buildings available.");
+            LOGGER.warn("No buildings found in the data points list");
         }
     }
 
     // View building details
     private void viewBuildingDetails(DataPoint dataPoint) {
         Building building = dataPoint.getBuilding();
-        System.out.println("Selected Building: " + building.getName());
-        System.out.println("Author: " + building.getAuthor());
-        System.out.println("Description: " + building.getDescription());
+        LOGGER.info("Viewing building details for '{}'", building.getName());
     }
 
     // Upload a new building
     public void uploadBuilding(Building building) {
         DataPoint newPoint = new DataPoint(building, new double[]{0, 0, 0}, 0);
-        dataPoints.add(newPoint);
-        System.out.println("Uploaded building: " + building.getName());
+        Persistency.addDataPoint(newPoint);
+        LOGGER.info("Uploaded building: {}", building.getName());
     }
 
     // Adjust position
     public void adjustBuildingPosition(DataPoint dataPoint, double[] newOffsets) {
         dataPoint.setOffsets(newOffsets);
-        System.out.println("Adjusted position for building: " + dataPoint.getBuilding().getName());
+        LOGGER.info("Adjusted position for building: {}", dataPoint.getBuilding().getName());
     }
 
     // Adjust rotation
     public void adjustBuildingRotation(DataPoint dataPoint, double newRotation) {
         dataPoint.setRotationAngle(newRotation);
-        System.out.println("Adjusted rotation for building: " + dataPoint.getBuilding().getName());
+        LOGGER.info("Adjusted rotation for building: {}", dataPoint.getBuilding().getName());
     }
 
     // Delete a building
     public void deleteBuilding(DataPoint dataPoint) {
-        dataPoints.remove(dataPoint);
-        System.out.println("Deleted building: " + dataPoint.getBuilding().getName());
+        Persistency.deleteDataPoint(dataPoint);
+        LOGGER.info("Deleted building: {}", dataPoint.getBuilding().getName());
     }
 }
