@@ -12,7 +12,7 @@
         Building Archive
     </h1>
 
-    <form action="/upload" method="post">
+    <form action="/upload" method="post" enctype="multipart/form-data">
         <label>Name:</label>
         <input type="text" name="name" size="30">
         <label>Author's name:</label>
@@ -23,6 +23,8 @@
         <input type="number" name="latitude" size="30">
         <label>Longitude:</label>
         <input type="number" name="longitude" size="30">
+        <label>3D Model:</label>
+        <input type="file" name="modelFile" accept=".gltf,.glb,.obj">
         <input type="submit" value="Submit">
     </form>
 

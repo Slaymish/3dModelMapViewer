@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "BuildingManager", urlPatterns = "/buildings")
+@WebServlet(name = "BuildingManager", urlPatterns = "/explore")
 public class BuildingManager extends HttpServlet {
     private final List<DataPoint> buildings = Persistency.getDataPoints();  // Assume Persistency is handling storage
 

@@ -15,6 +15,8 @@
 <div id="container"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
     function fetchCameraData() {
         fetch('/camera')
@@ -29,7 +31,8 @@
 
     let scene, camera, renderer;
     let buildings = [];
-
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
 
 
     // Initialize the scene
@@ -52,7 +55,31 @@
         fetchCameraData();
         fetchBuildings();
 
+        renderer.domElement.addEventListener('click', onClick, false);
+
         animate();
+    }
+
+    function onClick(event) {
+        event.preventDefault();
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        let intersects = raycaster.intersectObjects(buildings, true); // Check buildings array, true for recursive
+
+        if (intersects.length > 0) {
+            // Traverse up to find the object with onClick, as intersects might be a child mesh
+            let clickedObject = intersects[0].object;
+            while (clickedObject && !clickedObject.onClick) {
+                clickedObject = clickedObject.parent;
+            }
+            if (clickedObject && clickedObject.onClick) {
+                clickedObject.onClick();
+            }
+        }
     }
 
     // Animation loop
@@ -83,22 +110,81 @@
 
     // Place building on the globe
     function placeBuildingOnGlobe(building) {
-        let { lat, lon, name } = building;
+        let { lat, lon, name, modelPath } = building; // modelPath is now expected
         let position = latLongToVector3(lat, lon);
 
-        let buildingGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);  // Simplified 3D model
-        let buildingMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        if (modelPath) {
+            const loadModel = (loader, path) => {
+                loader.load(
+                    path, // modelPath should be a URL like 'uploads/models/yourmodel.gltf'
+                    function (loadedModel) {
+                        let modelObject;
+                        if (loader instanceof THREE.GLTFLoader) {
+                            modelObject = loadedModel.scene;
+                        } else { // OBJLoader directly returns the object
+                            modelObject = loadedModel;
+                        }
+
+                        modelObject.position.copy(position);
+
+                        // Normalize and scale the model
+                        const box = new THREE.Box3().setFromObject(modelObject);
+                        const size = box.getSize(new THREE.Vector3());
+                        const center = box.getCenter(new THREE.Vector3());
+                        modelObject.position.x += (modelObject.position.x - center.x);
+                        modelObject.position.y += (modelObject.position.y - center.y);
+                        modelObject.position.z += (modelObject.position.z - center.z);
+
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const scale = 0.1 / maxDim; // Adjust 0.1 to desired apparent size
+                        modelObject.scale.set(scale, scale, scale);
+
+                        modelObject.userData = { name, type: '3DModel' }; // Add original building data if needed
+                        scene.add(modelObject);
+                        buildings.push(modelObject); // Add for raycasting
+
+                        // If you need individual meshes for click, iterate through modelObject.children
+                        // For simplicity, we'll make the whole modelObject clickable if possible
+                        // This part might need adjustment based on how raycasting is set up
+                        modelObject.onClick = function() {
+                            displayBuildingDetails(building);
+                        };
+                    },
+                    undefined, // onProgress callback (optional)
+                    function (error) {
+                        console.error('Error loading model ' + name + ' from ' + path + ':', error);
+                        // Fallback to a cube if model loading fails
+                        createFallbackCube(position, name, building);
+                    }
+                );
+            };
+
+            if (modelPath.toLowerCase().endsWith('.gltf') || modelPath.toLowerCase().endsWith('.glb')) {
+                const loader = new THREE.GLTFLoader();
+                loadModel(loader, modelPath);
+            } else if (modelPath.toLowerCase().endsWith('.obj')) {
+                const loader = new THREE.OBJLoader();
+                loadModel(loader, modelPath);
+            } else {
+                console.warn('Unsupported model format for: ' + modelPath + '. Falling back to cube.');
+                createFallbackCube(position, name, building);
+            }
+        } else {
+            // No modelPath provided, use fallback cube
+            createFallbackCube(position, name, building);
+        }
+    }
+
+    function createFallbackCube(position, name, buildingDetails) {
+        let buildingGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+        let buildingMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red cube
         let buildingMesh = new THREE.Mesh(buildingGeometry, buildingMaterial);
-
         buildingMesh.position.copy(position);
-        buildingMesh.userData = { name };
-
+        buildingMesh.userData = { name, type: 'FallbackCube' };
         scene.add(buildingMesh);
         buildings.push(buildingMesh);
-
-        // Click detection
         buildingMesh.onClick = function() {
-            displayBuildingDetails(building);
+            displayBuildingDetails(buildingDetails);
         };
     }
 
